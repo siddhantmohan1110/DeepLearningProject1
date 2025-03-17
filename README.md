@@ -1,6 +1,5 @@
-# MeanSquareTerror_P1
-ECE-GY 7123 Deep Learning Project 1
-by Akshat Mishra (am15111@nyu.edu), Jay Daftari (jd5829@nyu.edu) and Siddhant Mohan (sm12766@nyu.edu).
+# ECE-GY 7123 Deep Learning Project 1 - Mean Square Terror
+by and Siddhant Mohan (sm12766@nyu.edu), Akshat Mishra (am15111@nyu.edu) and Jay Daftari (jd5829@nyu.edu).
 
 This project helps train and test a modified version of ResNet having <5M params.
 
