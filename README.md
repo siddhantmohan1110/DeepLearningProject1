@@ -3,7 +3,7 @@ by Siddhant Mohan (sm12766@nyu.edu), Akshat Mishra (am15111@nyu.edu) and Jay Daf
 
 This project helps train and test a modified version of ResNet having <5M params.
 
-A fork of [pytorch-cifar](url).
+Forked and adapted from [pytorch-cifar]([url](https://github.com/kuangliu/pytorch-cifar)).
 
 Train with
 ```
