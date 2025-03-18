@@ -196,6 +196,7 @@ if __name__ == '__main__':
         net = torch.nn.DataParallel(net)
         cudnn.benchmark = True
 
+    #add option to resume training from a checkpoint
     if args.resume:
         # Load checkpoint.
         print('==> Resuming from checkpoint..')
