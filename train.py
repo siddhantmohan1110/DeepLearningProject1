@@ -209,7 +209,7 @@ if __name__ == '__main__':
     criterion = nn.CrossEntropyLoss(label_smoothing=params['label_smoothing'])
     optimizer = optim.SGD(net.parameters(), lr=params['lr'],
                         momentum=params['momentum'], weight_decay=params['weight_decay'])
-    scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=params['epochs'])
+    scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=min(params['epochs'], 200))
 
     train_accuracies = []
     test_accuracies = []
