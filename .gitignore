@@ -4,7 +4,7 @@ __pycache__/
 *.pyc
 *.py[cod]
 *$py.class
-exp*/
+exp*
 *.csv
 *.txt
 *.png
@@ -12,6 +12,9 @@ cifar-10-batches-py/
 *.tar.gz
 *.csv
 *.png
+
+# Allow this specific experiment folder to be tracked
+!exp2_*
 
 # C extensions
 *.so
