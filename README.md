@@ -27,4 +27,4 @@ Carry out test-time augmentation with
 python3 test.py --exp_name exp1 --ckpt_name <ckpt_name> --tta 1
 ```
 
-Also contains the experiment folder ```exp2_aug1``` whose results helped us achieve rank 21 in the competition. The folder consists of the accuracy and loss plot, the model summary, the model file and the submission.csv file.
+Also contains the experiment folder ```exp2_aug1``` whose results helped us achieve rank 21 in the competition. The folder consists of the accuracy and loss plot, the model summary, the best model file and the best submission.csv file.
