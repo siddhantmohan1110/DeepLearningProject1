@@ -15,6 +15,7 @@ cifar-10-batches-py/
 
 # Allow this specific experiment folder to be tracked
 !exp2_*
+!best_submission.csv
 
 # C extensions
 *.so
