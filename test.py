@@ -4,13 +4,13 @@ import pandas as pd
 import torch
 from datasets import *
 from models import *
-import torchvision
 from all_transforms import *
 
 from utils import *
 
 from train import params
 
+#pasisng the test data through the model for evaluation
 def passTestData(model, device, state_dict, testloader, nolabel=False):
     model.load_state_dict(state_dict)
     model.eval()
@@ -48,7 +48,7 @@ def passTestData(model, device, state_dict, testloader, nolabel=False):
                 
     return all_ids, all_predictions, correct, total, all_labels
 
-
+#function for testing the model with the given data
 def testModel(exp_name, ckpt_name, testloader=None, model=None, device='cpu', nolabel=False):
     checkpoint = torch.load(os.path.join(exp_name, exp_name+'_checkpoints', exp_name+'_'+ckpt_name), map_location=device)
     
@@ -74,7 +74,7 @@ def testModel(exp_name, ckpt_name, testloader=None, model=None, device='cpu', no
                
     return test_accuracy, test_epoch
 
-
+#function for testing the data using test-time augmentation (TTA)
 def testModelTTA(exp_name, ckpt_name, model, device='cpu', nolabel=False):  # Increased from 4 to 10
     checkpoint = torch.load(os.path.join(exp_name, exp_name+'_checkpoints', exp_name+'_'+ckpt_name), map_location=device)
     test_epoch = checkpoint.get('epoch', 'unknown')
@@ -94,8 +94,9 @@ def testModelTTA(exp_name, ckpt_name, model, device='cpu', nolabel=False):  # In
             tta_testset = CustomCIFAR10Dataset(root='./data', mode='test', transform=tta_transforms[i])
             if i==0:
                 all_labels = tta_testset.return_labels().tolist()
+        
+        #obtaining normalization parameters for each transform block
         tta_testloader = normalized_loader(tta_testset, n=5, batch_size=100, shuffle=False, num_workers=2)
-        # tta_testloader = torch.utils.data.DataLoader(tta_testset, batch_size=100, shuffle=False, num_workers=2)
         
         with torch.no_grad():
             for batch_idx, batch_data in enumerate(tta_testloader):
@@ -106,12 +107,12 @@ def testModelTTA(exp_name, ckpt_name, model, device='cpu', nolabel=False):  # In
         all_predictions.append(torch.cat(all_outputs))
         print('{}/{} transforms'.format(i+1, len(tta_transforms)))    
     
-    # Average the predictions
+    # Averaging the predictions and taking the one with the maximum probability
     final_probs = sum(all_predictions) / len(all_predictions)
     predicted = torch.argmax(final_probs, dim=1)
 
     if nolabel:
-        # Create submission.csv
+        # Creating submission.csv
         df = pd.DataFrame({'ID': all_ids, 'Labels': predicted.tolist()})
         df = df.sort_values(by='ID')
         df.to_csv(os.path.join(exp_name, 'submission.csv'), index=False)
@@ -119,6 +120,7 @@ def testModelTTA(exp_name, ckpt_name, model, device='cpu', nolabel=False):  # In
         test_accuracy = None
         
     else:
+        #getting the test accuracy
         correct = predicted.eq(torch.tensor(all_labels).to(device)).sum().item()
         test_accuracy = 100.*correct/len(tta_testset)
 

@@ -82,9 +82,9 @@ class ModResNet(nn.Module):
         super(ModResNet, self).__init__()
         self.in_planes = 64
         if type==1:
-            channels = [64, 128, 192, 256]
+            channels = [64, 128, 192, 256] #type-1 ModResNet (4.1M params)
         elif type==2:
-            channels = [64, 128, 208, 288]
+            channels = [64, 128, 208, 288] #type-2 ModResNet (4.9M params)
         else:
             raise ValueError('Only 1 or 2 are valid types of ModResNet')
         

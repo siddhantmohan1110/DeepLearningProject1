@@ -6,7 +6,6 @@
 import os
 import sys
 import time
-import math
 
 import torch
 import torch.nn as nn
@@ -126,19 +125,23 @@ def format_time(seconds):
         f = '0ms'
     return f
 
+#function for getting normalization parameters of each transform block
 def normalized_loader(dataset, n=5, batch_size=100, shuffle=False, num_workers=2):
     f_m=0
     f_s=0
+    #running the transformation n times separately and averaging out the mean and std obtained from each run
     for i in range(n):
         m, s =get_mean_and_std(dataset)
         f_m+=m
         f_s+=s
     f_m = f_m / n
     f_s = f_s / n
+
     transform_norm = transforms.Compose([
         transforms.Normalize(f_m, f_s)
     ])
     transform_old = dataset.transform
+    #appending the computed normalization params to each transform block
     dataset.transform = transforms.Compose(transform_old.transforms + transform_norm.transforms)
     loader=torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=shuffle, num_workers=num_workers)
     return loader

@@ -2,9 +2,9 @@ import numpy as np
 import os
 import pickle
 from torch.utils.data import Dataset
-import torchvision.transforms as transformsCustomCIFAR10Dataset
 from PIL import Image
 
+#custom dataloader for loading CIFAR-10 dataset, useful for TTA (please use the inbuilt PyTorch dataloader the first time to download the CIFAR-10 data)
 class CustomCIFAR10Dataset(Dataset):
     def __init__(self, root, mode, pkl_file_path=None, transform=None):
 
@@ -61,7 +61,7 @@ class CustomCIFAR10Dataset(Dataset):
         
         if self.transform:
             img = Image.fromarray(img)
-            img = self.transform(img)
+            img = self.transform(img) #transforming the image
             
         if self.mode=='train' or self.mode=='test':
             label = self.labels[idx]

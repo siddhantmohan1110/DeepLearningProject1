@@ -33,7 +33,7 @@ label_smoothing : label smoothing for the cross-entropy loss
 params = {
         'modresnet_type' : 1,
         'dropout' : 0,
-        'epochs' : 2,
+        'epochs' : 300,
         'weight_decay' : 5e-4,
         'momentum' : 0.9,
         'lr' : 0.1,
@@ -75,7 +75,7 @@ def train(model, epoch):
     train_loss = train_loss/len(trainloader)
     return train_acc, train_loss
 
-
+#function for getting test loss and accuracy during training, and save checkpoints
 def test_during_training(model, epoch):
     global best_acc
     model.eval()
@@ -120,7 +120,7 @@ def test_during_training(model, epoch):
     
     return test_acc, test_loss
 
-
+#function for plotting the accuracies and losses
 def basic_plotter(tr_acc, ts_acc, tr_loss, ts_loss, save_path):
 
     fig, axes = plt.subplots(2, 1, figsize=(12, 12))
@@ -160,7 +160,7 @@ if __name__ == '__main__':
     best_acc = 0  # best test accuracy
     start_epoch = 0  # start from epoch 0 or last checkpoint epoch
 
-    # Data
+    # loading the data (also downloading if not already present)
     print('==> Preparing data..')
     trainset = torchvision.datasets.CIFAR10(
         root='./data', train=True, download=True, transform=transform_train)
@@ -175,15 +175,16 @@ if __name__ == '__main__':
     classes = ('airplane', 'automobile', 'bird', 'cat', 'deer',
             'dog', 'frog', 'horse', 'ship', 'truck')
     
+    #creating a directory to store all files related to the experiment
     directory = os.path.join(args.exp_name, args.exp_name+'_checkpoints')
     os.makedirs(directory, exist_ok=True)
 
-    # Model
+    # building the model
     print('==> Building model..')
     net = ModResNet18(type=params['modresnet_type'], dropout=params['dropout'],)
     net = net.to(device)
 
-    # Get its summary
+    # Getting its summary
     with open(os.path.join(args.exp_name, args.exp_name+'_model_summary.txt'), 'w') as f, io.StringIO() as buf:
         sys.stdout = buf
         summary(net, input_size=(1, 3, 32, 32), col_names=('output_size', 'num_params', 'params_percent'), device=device)
@@ -204,6 +205,7 @@ if __name__ == '__main__':
         best_acc = checkpoint['acc']
         start_epoch = checkpoint['epoch']
 
+    #defining loss, optimizer, scheduler
     criterion = nn.CrossEntropyLoss(label_smoothing=params['label_smoothing'])
     optimizer = optim.SGD(net.parameters(), lr=params['lr'],
                         momentum=params['momentum'], weight_decay=params['weight_decay'])
@@ -214,6 +216,7 @@ if __name__ == '__main__':
     train_losses = []
     test_losses = []
 
+    #training loop
     for epoch in range(start_epoch+1, params['epochs']+1):
         train_acc, train_loss = train(net, epoch)
         test_acc, test_loss = test_during_training(net, epoch)
@@ -223,5 +226,6 @@ if __name__ == '__main__':
         test_losses.append(test_loss) 
         scheduler.step()
     
+    #getting the plot
     basic_plotter(train_accuracies, test_accuracies, train_losses, test_losses, args.exp_name)
     

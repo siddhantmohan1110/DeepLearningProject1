@@ -1,6 +1,6 @@
 import torchvision.transforms as transforms
 
-# Define more diverse TTA transformations
+#Diverse transforms for TTA (the normalization parameters will be computed on the spot and appended to each block)
 tta_transforms = [
     # Normal test transform
     transforms.Compose([
@@ -54,11 +54,13 @@ tta_transforms = [
     ])
 ]
 
+#transforms during testing without TTA
 transform_test = transforms.Compose([
     transforms.ToTensor(),
     transforms.Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)),
     ])
 
+#transforms during training
 transform_train = transforms.Compose([
     transforms.RandomCrop(32, padding=4), 
     transforms.RandomHorizontalFlip(p=0.5),
